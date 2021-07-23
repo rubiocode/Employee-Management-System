@@ -102,17 +102,17 @@ const selectedItem = async (userSelection) => {
 
 const addDepartment = async () => {
     try {
-        const departmentName = await inquirer.prompt([
+        const {departmentName} = await inquirer.prompt([
             {
                 name: 'departmentName',
                 type: 'input',
                 message: 'What is the name of the deparment?',
             },
         ]);
-
+        console.log (departmentName);
         const query = `INSERT INTO department (departmentName) VALUES (?)`;
 
-        connection.query(query, departmentName, (err, result) => {
+        connection.query(query, [departmentName], (err, result) => {
             if (err) throw err;
             console.log('YOUR ADDED DEPARTMENT IS', result);
             connection.end();
