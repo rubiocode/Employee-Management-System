@@ -109,12 +109,11 @@ const addDepartment = async () => {
                 message: 'What is the name of the deparment?',
             },
         ]);
-        console.log (departmentName);
         const query = `INSERT INTO department (departmentName) VALUES (?)`;
 
         connection.query(query, [departmentName], (err, result) => {
             if (err) throw err;
-            console.log('YOUR ADDED DEPARTMENT IS', result);
+            console.log(`${departmentName} has been successfully added to the database`, result);
             connection.end();
         })
 
