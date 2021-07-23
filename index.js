@@ -2,6 +2,8 @@ const inquirer = require('inquirer');
 
 const connection = require('./Connection/employeeMgmtSystemConnection');
 
+const table = require ('console.table');
+
 const figlet = require('figlet');
 
 
@@ -39,8 +41,8 @@ connection.connect(async (err)=>{
                     'View Employees by Manager',
                     'View Department\'s Utilized Budget',
                     new inquirer.Separator('──────────────────── Update ────────────────────'),
-                    'Update Employee Role',
                     'Update Employee Manager',
+                    'Update Employee Role',
                     new inquirer.Separator('───────────────────── Exit ─────────────────────'),
                     'Exit Node.js'
                 ],
@@ -57,13 +59,13 @@ connection.connect(async (err)=>{
     if (userSelection === 'Add Department'){
         addDepartment();
     };
-    /*if (userSelection === 'Add Employee'){
+    if (userSelection === 'Add Employee'){
         addEmployee();
     };
     if (userSelection === 'Add Role'){
         addRole();
     };
-    if (userSelection === 'Delete Department'){
+    /*if (userSelection === 'Delete Department'){
         deleteDepartment();
     };
     if (userSelection === 'Delete Employee'){
@@ -123,37 +125,61 @@ const addDepartment = async ()=> {
 
 const addEmployee = async ()=>{
     try {
-    
+
+        const {firstName, lastName, rolesId, managerId} = await inquirer.prompt ([
+            {
+                name: 'firstName',
+                type: 'input',
+                message: 'What is the first name of the employee?',
+            },
+            {
+                name: 'lastName',
+                type: 'input',
+                message: 'What is the last name of the employee?',
+            },
+            {
+                name: 'rolesId',
+                type: 'list',
+                message: 'What is the employee\'s title?',
+                choices: [
+                    {name: 'Accountant', value: 1},
+                    {name: 'Software Engineer', value: 2},
+                    {name: 'Lawyer', value: 3},
+                    {name: 'Lead Engineer', value: 4},
+                    {name: 'Legal Team Lead', value: 5},
+                    {name: 'Sales Leader', value: 6},
+                    {name: 'Salesperson', value: 7},
+                ]
+            },
+            {
+                name: 'managerId',
+                type: 'list',
+                message: 'What is the name of the employee\'s manager?',
+                choices: [
+                    {name: 'Ashley Rodriguez', value: 8},
+                    {name: 'John Doe', value: 9},
+                    {name: 'Sarah Lourd', value: 10},
+                    {name: 'none', value: null},
+                ]
+            },
+        ]);
+
+        const query = 'INSERT INTO employee (firstName, lastName, rolesId, managerId) VALUES (?, ?, ?, ?)';
+
+        connection.query (query, [firstName, lastName, rolesId, managerId], (err, result)=>{
+            if (err) throw err;
+            console.log(`${firstName} ${lastName} was successfully added to the database`, result);
+            connection.end();
+            
+        });
+
     } catch (e) {
-    
+        connection.end();
     }
-}
+};
 
 /*{
-            name: 'addEmployeeFirst',
-            type: 'input',
-            message: 'What is the first name of the employee?',
-        },
-        {
-            name: 'addEmployeeLast',
-            type: 'input',
-            message: 'What is the last name of the employee?',
-        },
-        {
-            name: 'addManager',
-            type: 'input',
-            message: 'What is the name of the employee\'s manager?',
-        },
-        {
-            name: 'addTitle',
-            type: 'input',
-            message: 'What is the employee\'s title?',
-        },
-        {
-            name: 'addSalary',
-            type: 'input',
-            message: 'What is the employee\'s salary?',
-        },
-
-    ]);*/
-    
+    name: 'salary',
+    type: 'input',
+    message: 'What is the employee\'s salary?',
+},*/
