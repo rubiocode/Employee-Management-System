@@ -65,10 +65,10 @@ connection.connect(async (err)=>{
     if (userSelection === 'Add Role'){
         addRole();
     };
-    /*if (userSelection === 'Delete Department'){
+    if (userSelection === 'Delete Department'){
         deleteDepartment();
     };
-    if (userSelection === 'Delete Employee'){
+    /*if (userSelection === 'Delete Employee'){
         deleteEmployee();
     };
     if (userSelection === 'Delete Role'){
@@ -205,8 +205,27 @@ const addRole = async () => {
     }
 }
 
-/*{
-    name: 'salary',
-    type: 'input',
-    message: 'What is the employee\'s salary?',
-},*/
+const deleteDepartment = () => {
+    connection.query('SELECT departmentName FROM department', async (err, names) => {
+        if (err) throw err;
+
+        try {
+            const departmentToDelete = await inquirer.prompt ([
+                {
+                    name: 'departmentName',
+                    type: 'list',
+                    message: 'Which department would you like to delete?',
+                    choices: names.map (departmentName => departmentName.departmentName),
+                }
+            ]);
+
+            connection.query('DELETE FROM department WHERE departmentName = ?', departmentToDelete.departmentName, (err, result) => {
+                if (err) throw err;
+                console.log(`the department ${departmentName} has been successfully deleted from database`, result);
+                connection.end();
+            });
+        } catch (e) {
+            connection.end();
+        }
+    })
+}
