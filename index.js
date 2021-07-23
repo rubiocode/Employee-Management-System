@@ -178,6 +178,33 @@ const addEmployee = async ()=>{
     }
 };
 
+const addRole = async () => {
+    try {
+        const {title, salary} = await inquirer.prompt ([
+            {
+                name: 'title',
+                type: 'input',
+                message: 'Enter the title of the role you would like to add?',
+            },
+            {
+                name: 'salary',
+                type: 'number',
+                message: 'Enter the salary for this role?',
+            },
+        ]);
+
+        const query = 'INSERT INTO roles (title, salary) VALUES (?, ?)';
+
+        connection.query (query, [title, parseFloat(salary)], (err, result)=>{
+            if (err) throw err;
+            console.log(`the role ${title} with a salary of ${salary} has been successfully added to the database`, result);
+            connection.end();
+        })
+    } catch (e) {
+        connection.end();
+    }
+}
+
 /*{
     name: 'salary',
     type: 'input',
