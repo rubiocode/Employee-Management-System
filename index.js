@@ -18,7 +18,12 @@ figlet('Employee Tracker', function (err, data) {
 
 connection.connect(async (err) => {
     if (err) throw err;
+    console.log(`Welcome to Employee Management System ${connection.threadId}\n`);
+    start();
 
+});
+
+const start = async () => {
     try {
         const userOptions = await inquirer.prompt([
             {
@@ -32,19 +37,19 @@ connection.connect(async (err) => {
                     'Add Role',
                     new inquirer.Separator('──────────────────── Delete ────────────────────'),
                     'Delete Department',
-                    'Delete Employee',
+                    //'Delete Employee',
                     'Delete Role',
                     new inquirer.Separator('───────────────────── View ─────────────────────'),
                     'View All Departments',
                     'View All Employees',
                     'View All Roles',
-                    'View Employees by Manager',
-                    'View Department\'s Utilized Budget',
+                    //'View Employees by Manager',
+                    //'View Department\'s Utilized Budget',
                     new inquirer.Separator('──────────────────── Update ────────────────────'),
-                    'Update Employee Manager',
+                    //'Update Employee Manager',
                     'Update Employee Role',
                     new inquirer.Separator('───────────────────── Exit ─────────────────────'),
-                    'Exit Node.js'
+                    'Exit Menu'
                 ],
             },
         ]);
@@ -53,7 +58,8 @@ connection.connect(async (err) => {
     } catch (e) {
         console.log(e);
     };
-});
+};
+
 
 const selectedItem = async (userSelection) => {
     if (userSelection === 'Add Department') {
@@ -70,10 +76,10 @@ const selectedItem = async (userSelection) => {
     };
     /*if (userSelection === 'Delete Employee'){
         deleteEmployee();
-    };
+    };*/
     if (userSelection === 'Delete Role'){
         deleteRole();
-    };*/
+    };
     if (userSelection === 'View All Departments') {
         viewDepartment();
     };
@@ -88,21 +94,21 @@ const selectedItem = async (userSelection) => {
     };
     if (userSelection === 'View Department\'s Utilized Budget'){
         viewTotalUsedBudget();
-    };
-    if (userSelection === 'Update Employee Role'){
+    };*/
+    if (userSelection === 'Update Employee Role') {
         updateRole();
     };
-    if (userSelection === 'Update Employee Manager'){
+    /*if (userSelection === 'Update Employee Manager'){
         updateManager();
-    };
+    };*/
     if (userSelection === 'Exit Node.js'){
-        exitMenu();
-    }*/
+        process.exit();
+    }
 };
 
 const addDepartment = async () => {
     try {
-        const {departmentName} = await inquirer.prompt([
+        const { departmentName } = await inquirer.prompt([
             {
                 name: 'departmentName',
                 type: 'input',
@@ -115,66 +121,79 @@ const addDepartment = async () => {
             if (err) throw err;
             console.log(`${departmentName} has been successfully added to the database`, result);
             connection.end();
-        })
+        });
+
+        start();
 
     } catch (e) {
+
+        console.log(e);
         connection.end();
     }
 }
 
 const addEmployee = async () => {
-    try {
 
-        const { firstName, lastName, rolesId, managerId } = await inquirer.prompt([
-            {
-                name: 'firstName',
-                type: 'input',
-                message: 'What is the first name of the employee?',
-            },
-            {
-                name: 'lastName',
-                type: 'input',
-                message: 'What is the last name of the employee?',
-            },
-            {
-                name: 'rolesId',
-                type: 'list',
-                message: 'What is the employee\'s title?',
-                choices: [
-                    { name: 'Accountant', value: 1 },
-                    { name: 'Software Engineer', value: 2 },
-                    { name: 'Lawyer', value: 3 },
-                    { name: 'Lead Engineer', value: 4 },
-                    { name: 'Legal Team Lead', value: 5 },
-                    { name: 'Sales Leader', value: 6 },
-                    { name: 'Salesperson', value: 7 },
-                ]
-            },
-            {
-                name: 'managerId',
-                type: 'list',
-                message: 'What is the name of the employee\'s manager?',
-                choices: [
-                    { name: 'Ashley Rodriguez', value: 8 },
-                    { name: 'John Doe', value: 9 },
-                    { name: 'Sarah Lourd', value: 10 },
-                    { name: 'none', value: null },
-                ]
-            },
-        ]);
+    connection.query(`SELECT title, id FROM roles`, async (err, positions) => {
+        if (err) throw err;
+        try {
 
-        const query = 'INSERT INTO employee (firstName, lastName, rolesId, managerId) VALUES (?, ?, ?, ?)';
+            const { firstName, lastName, rolesId, managerId } = await inquirer.prompt([
+                {
+                    name: 'firstName',
+                    type: 'input',
+                    message: 'What is the first name of the employee?',
+                },
+                {
+                    name: 'lastName',
+                    type: 'input',
+                    message: 'What is the last name of the employee?',
+                },
+                {
+                    name: 'rolesId',
+                    type: 'list',
+                    message: 'What is the employee\'s title?',
+                    choices: [
+                        { name: 'Accountant', value: 1 },
+                        { name: 'Software Engineer', value: 2 },
+                        { name: 'Lawyer', value: 3 },
+                        { name: 'Lead Engineer', value: 4 },
+                        { name: 'Legal Team Lead', value: 5 },
+                        { name: 'Sales Leader', value: 6 },
+                        { name: 'Salesperson', value: 7 },
+                    ]
+                },
+                {
+                    name: 'managerId',
+                    type: 'list',
+                    message: 'What is the name of the employee\'s manager?',
+                    choices: [
+                        { name: 'Ashley Rodriguez', value: 8 },
+                        { name: 'John Doe', value: 9 },
+                        { name: 'Sarah Lourd', value: 10 },
+                        { name: 'none', value: null },
+                    ]
+                },
+            ]);
 
-        connection.query(query, [firstName, lastName, rolesId, managerId], (err, result) => {
-            if (err) throw err;
-            console.log(`${firstName} ${lastName} was successfully added to the database`, result);
+            const query = 'INSERT INTO employee (firstName, lastName, rolesId, managerId) VALUES (?, ?, ?, ?)';
+
+            connection.query(query, [firstName, lastName, rolesId, managerId], (err, result) => {
+                if (err) throw err;
+                console.log(`${firstName} ${lastName} was successfully added to the database`, result);
+
+            });
+
+            start();
+
+        } catch (e) {
+
+            console.log(e);
+
             connection.end();
+        }
 
-        });
-
-    } catch (e) {
-        connection.end();
-    }
+    })
 };
 
 const addRole = async () => {
@@ -197,9 +216,12 @@ const addRole = async () => {
         connection.query(query, [title, parseFloat(salary)], (err, result) => {
             if (err) throw err;
             console.log(`the role ${title} with a salary of ${salary} has been successfully added to the database`, result);
-            connection.end();
-        })
+
+            start();
+        });
+
     } catch (e) {
+        console.log(e);
         connection.end();
     }
 };
@@ -223,7 +245,11 @@ const deleteDepartment = () => {
                 console.log(`the department ${departmentToDelete} has been successfully deleted from database`, result);
                 connection.end();
             });
+
+            start();
+
         } catch (e) {
+            console.log(e);
             connection.end();
         }
     })
@@ -248,17 +274,52 @@ const deleteEmployee = () => {
                 console.log(`${employee} has been successfully deleted from database`, result);
                 connection.end();
             });
+
+            start();
+
         } catch (e) {
+
+            console.log(e);
             connection.end();
         }
     });
+};
+
+const deleteRole = () => {
+    connection.query('SELECT title FROM roles', async (err, roles) => {
+        if (err) throw err;
+
+        try {
+            const roleToDelete = await inquirer.prompt([
+                {
+                    name: 'title',
+                    type: 'list',
+                    message: 'Which role would you like to delete?',
+                    choices: roles.map(roles => roles.title),
+                }
+            ]);
+
+            connection.query('DELETE FROM roles WHERE title = ?', roleToDelete.title, (err, result) => {
+                if (err) throw err;
+                console.log(`the role ${roleToDelete} has been successfully deleted from database`, result);
+                connection.end();
+            });
+
+            start();
+
+        } catch (e) {
+            console.log(e);
+            connection.end();
+        }
+    })
 };
 
 const viewDepartment = () => {
     connection.query('SELECT * FROM department', (err, department) => {
         if (err) throw err;
         console.table(department);
-        connection.end();
+
+        start();
     });
 };
 
@@ -266,7 +327,8 @@ const viewEmployee = () => {
     connection.query('SELECT * FROM employee', (err, employee) => {
         if (err) throw err;
         console.table(employee);
-        connection.end();
+
+        start();
     });
 };
 
@@ -274,6 +336,61 @@ const viewRoles = () => {
     connection.query('SELECT * FROM roles', (err, roles) => {
         if (err) throw err;
         console.table(roles);
-        connection.end();
+
+        start();
     });
 };
+
+const updateRole = async () => {
+
+    try {
+
+        const roles = await connection.query('SELECT roles.title, roles.id FROM roles');
+
+        roles = roles.map(row => {
+            const presentRole = { name: row.title, value: row.id };
+            return presentRole;
+        });
+
+        const employee = await connection.query('SELECT employee.id, firstName, lastName FROM employee');
+
+        employee = employee.map(each => {
+            return `${each.id} ${each.firstName} ${each.lastName}`
+        });
+
+        const answer = await inquirer.prompt([
+            {
+                name: 'employeeChoice',
+                type: 'list',
+                message: 'Select the employee you would like to update',
+                choices: employee,
+            },
+            {
+                name: 'updatedRole',
+                type: 'list',
+                message: 'Select new role for this employee',
+                choices: roles,
+            }
+        ]);
+
+
+        const employeeId = answer.employeeChoice[0].split(' ');
+
+        const query = (`UPDATE employee SET roles.id= ${answer.updatedRole} WHERE id=${employeeId[0]}`);
+
+        connection.query(query, [rolesId], (err, result) => {
+            if (err) throw err;
+            console.log(`Employee ${answer.employeeChoice} was successfully updated in the database`, result);
+            connection.end();
+        })
+
+        start();
+
+    } catch (e) {
+
+        console.log(e);
+        connection.end();
+    }
+
+    
+}
