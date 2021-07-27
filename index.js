@@ -37,7 +37,7 @@ const start = async () => {
                     'Add Role',
                     new inquirer.Separator('──────────────────── Delete ────────────────────'),
                     'Delete Department',
-                    'Delete Employee',
+                    //'Delete Employee',
                     'Delete Role',
                     new inquirer.Separator('───────────────────── View ─────────────────────'),
                     'View All Departments',
@@ -74,9 +74,6 @@ const selectedItem = async (userSelection) => {
     if (userSelection === 'Delete Department') {
         deleteDepartment();
     };
-    if (userSelection === 'Delete Employee') {
-        deleteEmployee();
-    };
     if (userSelection === 'Delete Role') {
         deleteRole();
     };
@@ -89,18 +86,9 @@ const selectedItem = async (userSelection) => {
     if (userSelection === 'View All Roles') {
         viewRoles();
     };
-    /*if (userSelection === 'View Employees by Manager'){
-        viewEmployeeByManager();
-    };
-    if (userSelection === 'View Department\'s Utilized Budget'){
-        viewTotalUsedBudget();
-    };*/
     if (userSelection === 'Update Employee Role') {
         updateRole();
     };
-    /*if (userSelection === 'Update Employee Manager'){
-        updateManager();
-    };*/
     if (userSelection === 'Exit Node.js') {
         process.exit();
     }
@@ -255,39 +243,6 @@ const deleteDepartment = () => {
     })
 };
 
-/*const deleteEmployee = () => {
-
-    connection.query('SELECT employee.id, firstName, lastName FROM employee', async (err, employee) => {
-
-        if (err) throw err;
-
-        try {
-
-            const employeeToDelete = await inquirer.prompt([
-                {
-                    name: 'employee',
-                    type: 'list',
-                    message: 'Which employee would you like to delete?',
-                    choices: employee,
-                }
-            ]);
-
-            connection.query('DELETE FROM employee WHERE employee.id, firstName, lastName = ?', employeeToDelete.employee, (err, result) => {
-                if (err) throw err;
-                console.log(`${employeeToDelete} has been successfully deleted from database`, result);
-                connection.end();
-            });
-
-            start();
-
-        } catch (e) {
-
-            console.log(e);
-            connection.end();
-        }
-    });
-};*/
-
 const deleteRole = () => {
     connection.query('SELECT title FROM roles', async (err, roles) => {
         if (err) throw err;
@@ -381,9 +336,6 @@ const updateRole = async () => {
                 }
             ])
             .then(answer => {
-                console.log(employee);
-            console.log(roles);
-            console.log(answer);
     
             const employeeId = answer.employeeChoice[0].split(' ');
             const query = (`UPDATE employee SET rolesId = ${answer.updatedRole} WHERE id =${employeeId[0]}`);
