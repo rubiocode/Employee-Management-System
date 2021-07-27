@@ -1,15 +1,22 @@
+-- Drops the employee_mgmt_systemDB if it already exists --
 DROP DATABASE IF EXISTS employee_mgmt_systemDB;
 
+-- Creates the employee_mgmt_systemDB --
 CREATE DATABASE employee_mgmt_systemDB;
 
+-- Selecting correct db --
 USE employee_mgmt_systemDB;
 
+
+-- Creating department table -- 
 CREATE TABLE department (
     id INT AUTO_INCREMENT NOT NULL,
     departmentName VARCHAR(30) NOT NULL,
     PRIMARY KEY(id)
 );
 
+
+-- Creating roles table --
 CREATE TABLE roles (
     id INT AUTO_INCREMENT NOT NULL,
     departmentId INT,
@@ -19,6 +26,8 @@ CREATE TABLE roles (
     FOREIGN KEY (departmentId) REFERENCES department
 );
 
+
+-- Creating employee table --
 CREATE TABLE employee (
     id INT AUTO_INCREMENT NOT NULL,
     firstName VARCHAR(30) NOT NULL,
@@ -29,10 +38,14 @@ CREATE TABLE employee (
     FOREIGN KEY (rolesId) REFERENCES roles
 );
 
+
+-- Selecting tables --
 SELECT * FROM department;
 SELECT * FROM roles;
 SELECT * FROM employee;
 
+
+-- Joining certain shared columns in each table --
 SELECT departmentName, title, salary
 FROM roles
 INNER JOIN department ON roles.departmentId = department.id;

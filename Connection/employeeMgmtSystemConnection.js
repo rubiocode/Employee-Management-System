@@ -1,5 +1,8 @@
+// required dependency
 const mysql = require('mysql');
 
+
+// stablishing MySQL connection. Always use given port 3306 
 const connection= mysql.createConnection({
 
     host: 'localhost',
@@ -12,4 +15,6 @@ const connection= mysql.createConnection({
     database: 'employee_mgmt_systemDB',
 });
 
+
+// Export module connection
 module.exports= connection;
