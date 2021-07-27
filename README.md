@@ -79,7 +79,7 @@ To install the dependencies, run the following command:
 npm i
 ```
 
-Once you have downloaded all dependencies make sure to node.js, using the following command 'node index.js' to get the prompts to populate. Important: make sure you are in the same folder where 'index.js' is located when running this command. 
+Once you have downloaded all dependencies make sure to invoke node.js, using the following command 'node index.js' to get the prompts to populate. Important: make sure you are in the same folder where 'index.js' is located when running this command. 
 
 ## Usage
 
